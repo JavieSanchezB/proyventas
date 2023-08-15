@@ -46,19 +46,19 @@
         <h2 class="text-center mb-4">Calculadora de Proyección de Ventas para mi Esposa Nele</h2>
         <div class="mb-3">
           <label for="meta" class="form-label">Meta del Mes:</label>
-          <input type="number" class="form-control" id="meta" step="any">
+          <input type="number" class="form-control" id="meta" step="any" oninput="validarNumero(this)">
         </div>
         <div class="mb-3">
           <label for="vendido" class="form-label">Vendido hasta ahora:</label>
-          <input type="number" class="form-control" id="vendido" step="any">
+          <input type="number" class="form-control" id="vendido" step="any" ioninput="validarNumero(this)">
         </div>
         <div class="mb-3">
           <label for="dias" class="form-label">Días hábiles del mes:</label>
-          <input type="number" class="form-control" id="dias" step="1">
+          <input type="number" class="form-control" id="dias" step="1" oninput="validarNumero(this)">
         </div>
         <div class="mb-3">
           <label for="diaActual" class="form-label">Día hábil actual:</label>
-          <input type="number" class="form-control" id="diaActual" step="1">
+          <input type="number" class="form-control" id="diaActual" step="1" oninput="validarNumero(this)">
         </div>
         <button class="btn btn-primary w-100" id="calcular">Calcular Proyección</button>
       </div>
@@ -72,19 +72,19 @@
       <div class="modal-header">
         <h5 class="modal-title" id="modalLabel"> <div class="text-center">
           
-        </div>Resultado de la Proyección <i class="fa fa-check-circle" aria-hidden="true"></i></h5>
+        </div><i class="fa fa-bars" aria-hidden="true"></i> Resultado de la Proyección</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p>% Ejecutado: <span id="progreso">0%</span></p>
-        <p>Promedio Ventas por Día: <span id="ventaPorDia">0</span></p>
-        <p>Faltan: <span id="faltan">0</span></p>
-        <p>Proyección Total en Valor: <span id="proyeccionTotalValor">0</span></p>
-        <p>% de cumplimiento: <span id="proyeccionTotalPorcentaje">0%</span></p>
-        <p>Meta Objetivo por Día Actual: <span id="metaObjetivo">0</span></p>
-        <p>Ejecutado por Día Actual: <span id="ejecutado">0</span></p>
-        <p>Meta Objetivo - Ejecutado: <span id="objetivo_ejecutado">0</span></p>
-        <p>Nueva Meta Día: <span id="nuevaMetaDia">0</span></p>
+        <p><i class="fa fa-plus-circle" aria-hidden="true"></i>% Ejecutado: <span id="progreso">0%</span></p>
+        <p><i class="fa fa-plus-square" aria-hidden="true"></i>Promedio Ventas por Día: <span id="ventaPorDia">0</span></p>
+        <p><i class="fa fa-minus-square" aria-hidden="true"></i>Faltan: <span id="faltan">0</span></p>
+        <p><i class="fa fa-paper-plane" aria-hidden="true"></i>Proyección Total en Valor: <span id="proyeccionTotalValor">0</span></p>
+        <p><i class="fa fa-pie-chart" aria-hidden="true"></i>% de cumplimiento: <span id="proyeccionTotalPorcentaje">0%</span></p>
+        <p><i class="fa fa-search-plus" aria-hidden="true"></i>Meta Objetivo por Día Actual: <span id="metaObjetivo">0</span></p>
+        <p><i class="fa fa-rocket" aria-hidden="true"></i>Ejecutado por Día Actual: <span id="ejecutado">0</span></p>
+        <p><i class="fa fa-sort" aria-hidden="true"></i>Meta Objetivo - Ejecutado: <span id="objetivo_ejecutado">0</span></p>
+        <p><i class="fa fa-upload" aria-hidden="true"></i>Nueva Meta Día: <span id="nuevaMetaDia">0</span></p>
        
       </div>
       <div class="modal-footer">
@@ -119,13 +119,38 @@
     </div>
   </div>
   
-
+<!-- Modal de Campos Incompletos -->
+<div class="modal fade" id="camposIncompletosModal" tabindex="-1" aria-labelledby="camposIncompletosModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="fa-3x">
+          <i class="fa-solid fa-circle-info fa-beat-fade" style="--fa-beat-fade-opacity: 0.67; --fa-beat-fade-scale: 1.075;" ></i>
+        </div>
+        
+        <h5 class="modal-title" id="camposIncompletosModalLabel">Campos Incompletos</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Por favor, complete todos los campos para de calcular la proyección.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- Agregar enlace a Bootstrap JS (Necesario para los componentes modales) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
   const calcularButton = document.getElementById('calcular');
   const modal = new bootstrap.Modal(document.getElementById('modal'));
   const cumplimientoModal = new bootstrap.Modal(document.getElementById('cumplimientoModal'));
+  const camposIncompletosModal = new bootstrap.Modal(document.getElementById('camposIncompletosModal'));
+ 
+  function validarNumero(input) {
+  input.value = input.value.replace(/[^0-9.]/g, '');
+}
   
   calcularButton.addEventListener('click', () => {
 
@@ -134,6 +159,13 @@
     const vendido = parseFloat(document.getElementById('vendido').value);
     const dias = parseInt(document.getElementById('dias').value);
     const diaActual = parseInt(document.getElementById('diaActual').value);
+
+     // Verificar que todos los campos tengan datos
+     if (isNaN(meta) || isNaN(vendido) || isNaN(dias) || isNaN(diaActual)) {
+      camposIncompletosModal.show();
+      return;
+    }
+
 
     const progreso = (vendido / meta) * 100;
     const ventaPorDia = (vendido/diaActual);
