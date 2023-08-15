@@ -17,7 +17,18 @@
           <label for="meta" class="form-label">Meta del Mes:</label>
           <input type="number" class="form-control" id="meta" step="any">
         </div>
-        <!-- Agregar más campos de entrada según tus necesidades -->
+        <div class="mb-3">
+          <label for="vendido" class="form-label">Vendido hasta ahora:</label>
+          <input type="number" class="form-control" id="vendido" step="any">
+        </div>
+        <div class="mb-3">
+          <label for="dias" class="form-label">Días hábiles del mes:</label>
+          <input type="number" class="form-control" id="dias" step="1">
+        </div>
+        <div class="mb-3">
+          <label for="diaActual" class="form-label">Día hábil actual:</label>
+          <input type="number" class="form-control" id="diaActual" step="1">
+        </div>
         <button class="btn btn-primary w-100" id="calcular">Calcular Proyección</button>
       </div>
     </div>
